@@ -4,6 +4,7 @@ Detect slowness issues due to throttling such as may be caused by an old battery
 ## Related Projects
 - https://github.com/syscl/CPUTune
 - https://github.com/calasanmarko/TurboMac
+  - NOTE: Author says running TurboMac in combination with BD_PROCHOT (which CPUTune can do) could cause permanent damage!
 
 ## Examples
 ### MacBook Air (13-inch, Mid 2012)
@@ -20,7 +21,7 @@ Detect slowness issues due to throttling such as may be caused by an old battery
   - apple.com said Xcode 14.5 was for my Catalina 10.15.7
   - downloading and extracting it took literally days, even on a wired connection
   - There was an 🚫 over the Xcode app
-  - I tried draggind it to Applications
+  - I tried dragging Xcode to Applications
   - Trying to open it resulted in some error about it being corrupt
   - When the app is in Applications, `git clone` fails and says "xcrun: error: invalid active developer path (/Applications/Xcode.app/Contents/Developer), missing xcrun at: /Applications/Xcode.app/Contents/Developer/usr/bin/xcrun"
     - git works after removing the app from Applications.
