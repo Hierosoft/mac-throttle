@@ -111,7 +111,7 @@ def get_powermetrics_data():
             missing_keys = ', '.join(missing)
             print("\npowermetrics completed, but the following keys are missing: " + missing_keys, file=sys.stderr)
         else:
-            print("\r100%   ", file=sys.stderr)
+            print("\r       ", file=sys.stderr)
             # Process throttle_str to extract percentage and MHz
         
         throttle_str = powermetrics_dict.get("System Average frequency as fraction of nominal")
@@ -147,4 +147,5 @@ combined_values = combine_dictionaries(pmset_key_values, cpu_speed_values, power
 
 # Display the combined key-value pairs
 for key, value in combined_values.items():
-    print("{}={}".format(key.replace(".", "_").replace(" ", "_"), value))
+    print('{}="{}"'.format(key.replace(".", "_").replace(" ", "_"),
+                           value.replace('"','\\"')))
