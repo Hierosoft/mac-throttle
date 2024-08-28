@@ -110,7 +110,19 @@ def get_powermetrics_data():
             print("\npowermetrics completed, but the following keys are missing: " + missing_keys, file=sys.stderr)
         else:
             print("\n100%", file=sys.stderr)
-    
+            # Process throttle_str to extract percentage and MHz
+        
+        throttle_str = powermetrics_dict.get("System Average frequency as fraction of nominal")
+        if throttle_str:
+            try:
+                # Example format: "44.34% (798.20 MHz)"
+                percentage, mhz = throttle_str.split(' (', 1)
+                mhz = mhz.rstrip(' MHz)')
+                powermetrics_dict["average_frequency_percent"] = percentage.strip(" %")
+                powermetrics_dict["average_frequency"] = mhz.strip()
+            except ValueError:
+                print("Error processing throttle string format", file=sys.stderr)
+                
     return powermetrics_dict
 
 
