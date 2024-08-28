@@ -1,6 +1,10 @@
 # mac-throttle
 Detect slowness issues due to throttling such as may be caused by an old battery. Provide steps that may improve the situation in some cases. See license for disclaimers.
 
+## Related Projects
+- https://github.com/syscl/CPUTune
+- https://github.com/calasanmarko/TurboMac
+
 ## Examples
 ### MacBook Air (13-inch, Mid 2012)
 - Model: A1466
