@@ -20,4 +20,5 @@ Detect slowness issues due to throttling such as may be caused by an old battery
   - There was an 🚫 over the Xcode app
   - I tried draggind it to Applications
   - Trying to open it resulted in some error about it being corrupt
-  - When the app is in Applications, `git clone` fails and says "xcrun: error: invalid active developer path (/Applications/Xcode.app/Contents/Developer), missing xcrun at: /Applications/Xcode.app/Contents/Developer/usr/bin/xcrun" 
+  - When the app is in Applications, `git clone` fails and says "xcrun: error: invalid active developer path (/Applications/Xcode.app/Contents/Developer), missing xcrun at: /Applications/Xcode.app/Contents/Developer/usr/bin/xcrun"
+    - git works after removing the app from Applications.
