@@ -111,7 +111,7 @@ def get_powermetrics_data():
             missing_keys = ', '.join(missing)
             print("\npowermetrics completed, but the following keys are missing: " + missing_keys, file=sys.stderr)
         else:
-            print("\n100%", file=sys.stderr)
+            print("\r100%   ", file=sys.stderr)
             # Process throttle_str to extract percentage and MHz
         
         throttle_str = powermetrics_dict.get("System Average frequency as fraction of nominal")
