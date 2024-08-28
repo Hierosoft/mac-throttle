@@ -69,12 +69,12 @@ def get_powermetrics_data():
                     key, value = line.split(':', 1)
                     powermetrics_dict[key.strip()] = value.strip()
                 
-                elif 'CPU_Speed_Limit' in line or 'CPU Power' in line:
+                elif 'machdep.cpu.mwait.sub_Cstates' in line or 'machdep.cpu.thermal.hardware_feedback' in line:
                     key, value = line.split(':', 1)
                     powermetrics_dict[key.strip()] = value.strip()
 
                 # Check if the required number of values have been obtained
-                if len(powermetrics_dict) >= 2:
+                if len(powermetrics_dict) >= 3:
                     sys.stderr.write("\r100%")
                     break
                 
