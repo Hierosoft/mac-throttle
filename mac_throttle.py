@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import division
 import subprocess
 import sys
 import time
@@ -63,9 +64,10 @@ def get_powermetrics_data():
     powermetrics_dict = {}
     
     try:
-        sys.stderr.write("\r0%")
-        sys.stderr.flush()
-        
+        # sys.stderr.write("\r0%")
+        # sys.stderr.flush()
+        # ^ This goes before the sudo password prompt, so don't do it.
+        #   "Machine model" will appear on the first line or so anyway.
         # Read stdout line by line
         for line in process.stdout:
             line = line.strip()
@@ -98,7 +100,9 @@ def get_powermetrics_data():
         
         if missing:
             missing_keys = ', '.join(missing)
-            print("powermetrics completed, but the following keys are missing: " + missing_keys, file=sys.stderr)
+            print("\npowermetrics completed, but the following keys are missing: " + missing_keys, file=sys.stderr)
+        else:
+            print("\n100%", file=sys.stderr)
     
     return powermetrics_dict
 
@@ -122,4 +126,4 @@ combined_values = combine_dictionaries(pmset_key_values, cpu_speed_values, power
 
 # Display the combined key-value pairs
 for key, value in combined_values.items():
-    print("{}={}".format(key, value))
+    print("{}={}".format(key.replace(".", "_").replace(" ", "_"), value))
