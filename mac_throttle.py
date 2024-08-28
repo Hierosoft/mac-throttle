@@ -52,6 +52,13 @@ def get_powermetrics_data():
         "OS version",
         "Boot time"
     ]
+    # NOTE: When not using -n 1, the live monitor (exit with Ctrl+C)
+    #   also has machdep.cpu.mwait.sub_Cstates,
+    #   machdep.cpu.thermal.hardware_feedback
+    #   which may be useful, but there is no way, apparently,
+    #   to get the values. The program must use ncurses or
+    #   some other similar library. Such values never make it
+    #   to stdout (nor stderr).
     keys_max = len(powermetrics_keys)
     
     # Make a copy of powermetrics_keys to track missing keys
