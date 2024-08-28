@@ -15,6 +15,8 @@ Detect slowness issues due to throttling such as may be caused by an old battery
   - CPU_Available_CPUs = 4 (4 is expected)
   - CPU_Speed_Limit = 31 (100 is 100%)
 - You may have to compile CPUTune or other utilities using a different computer with the same version of macOS if the affected computer is too slow:
+  - I installed Xcode command line tools
+    - but apparently CPUTune requires Xcode GUI: https://github.com/syscl/CPUTune/issues/43
   - apple.com said Xcode 14.5 was for my Catalina 10.15.7
   - downloading and extracting it took literally days, even on a wired connection
   - There was an 🚫 over the Xcode app
