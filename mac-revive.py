@@ -17,7 +17,7 @@ def get_pmset_key_value_pairs():
                 key, value = line.split('=', 1)
                 pmset_dict[key.strip()] = value.strip()
     else:
-        print("Error: pmset command failed with return code", result.returncode)
+        print("Error: pmset command failed with return code", result.returncode, file=sys.stderr)
 
     return pmset_dict
 
@@ -35,7 +35,7 @@ def get_cpu_current_speed():
                 key, value = line.split(':', 1)
                 cpu_dict[key.strip()] = value.strip()
     else:
-        print("Error: sysctl command failed with return code", result.returncode)
+        print("Error: sysctl command failed with return code", result.returncode, file=sys.stderr)
 
     return cpu_dict
 
@@ -73,10 +73,14 @@ def get_powermetrics_data():
                     key, value = line.split(':', 1)
                     powermetrics_dict[key.strip()] = value.strip()
 
+                # Check if the required number of values have been obtained
+                if len(powermetrics_dict) >= 2:
+                    sys.stderr.write("\r100%")
+                    break
+                
                 # Check for timeout
                 if elapsed_seconds >= max_seconds:
                     timeout = True
-                    sys.stderr.write("\r100%\n")
                     break
                 
                 # Update progress
@@ -85,7 +89,7 @@ def get_powermetrics_data():
 
     except KeyboardInterrupt:
         # Handle manual termination
-        print("\nTerminating powermetrics command due to user interruption.")
+        print("\nTerminating powermetrics command due to user interruption.", file=sys.stderr)
     
     finally:
         # Ensure the process is terminated
@@ -93,7 +97,7 @@ def get_powermetrics_data():
         process.wait()
         
         if timeout:
-            print("powermetrics timed out")
+            print("powermetrics timed out", file=sys.stderr)
 
     return powermetrics_dict
 
@@ -115,6 +119,5 @@ powermetrics_values = get_powermetrics_data()
 combined_values = combine_dictionaries(pmset_key_values, cpu_speed_values, powermetrics_values)
 
 # Display the combined key-value pairs
-print("Combined key-value pairs:")
 for key, value in combined_values.items():
-    print("{}: {}".format(key, value))
+    print("{}={}".format(key, value))
