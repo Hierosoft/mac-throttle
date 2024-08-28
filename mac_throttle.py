@@ -4,12 +4,14 @@ import subprocess
 import sys
 import time
 
+from collections import OrderedDict
+
 def get_pmset_key_value_pairs():
     """Gets key-value pairs from 'pmset -g therm'."""
     result = subprocess.Popen(['pmset', '-g', 'therm'], stdout=subprocess.PIPE)
     output, _ = result.communicate()
 
-    pmset_dict = {}
+    pmset_dict = OrderedDict()
 
     if result.returncode == 0:
         for line in output.splitlines():
@@ -27,7 +29,7 @@ def get_cpu_current_speed():
     result = subprocess.Popen(['sysctl', '-a'], stdout=subprocess.PIPE)
     output, _ = result.communicate()
 
-    cpu_dict = {}
+    cpu_dict = OrderedDict()
 
     if result.returncode == 0:
         for line in output.splitlines():
@@ -68,7 +70,7 @@ def get_powermetrics_data():
     process = subprocess.Popen(['sudo', 'powermetrics', '--samplers', 'cpu_power,gpu_power,gpu_agpm_stats,smc', '-n', '1', '--format', 'text'],
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
-    powermetrics_dict = {}
+    powermetrics_dict = OrderedDict()
     
     try:
         # sys.stderr.write("\r0%")
@@ -128,7 +130,7 @@ def get_powermetrics_data():
 
 def combine_dictionaries(*args):
     """Combines multiple dictionaries."""
-    combined_dict = args[0].copy() if args else {}
+    combined_dict = args[0].copy() if args else OrderedDict()
     
     for i in range(1, len(args)):
         combined_dict.update(args[i])
