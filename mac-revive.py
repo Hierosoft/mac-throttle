@@ -39,54 +39,54 @@ def get_cpu_current_speed():
 
     return cpu_dict
 
+
 def get_powermetrics_data():
     """Gets throttling-related data from 'powermetrics'."""
-    # Start the powermetrics command
-    process = subprocess.Popen(['sudo', 'powermetrics', '--samplers', 'cpu_power', '--format', 'text'],
+    # Define the keys we are interested in
+    powermetrics_keys = [
+        "System Average frequency as fraction of nominal",
+        "Machine model",
+        "SMC version",
+        "EFI version",
+        "OS version",
+        "Boot time"
+    ]
+    keys_max = len(powermetrics_keys)
+    
+    # Make a copy of powermetrics_keys to track missing keys
+    missing = set(powermetrics_keys)
+    
+    # Start the powermetrics command with -n 1 to limit it to one sample
+    process = subprocess.Popen(['sudo', 'powermetrics', '--samplers', 'cpu_power,gpu_power,gpu_agpm_stats,smc', '-n', '1', '--format', 'text'],
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     powermetrics_dict = {}
-    start_seconds = None
-    max_seconds = 60.0
-    timeout = False
-
+    
     try:
-        while True:
-            # Read stdout line by line
-            line = process.stdout.readline()
+        sys.stderr.write("\r0%")
+        sys.stderr.flush()
+        
+        # Read stdout line by line
+        for line in process.stdout:
+            line = line.strip()
             
-            # Check for "Machine model" to start timing
-            if start_seconds is None and "Machine model" in line:
-                start_seconds = time.time()
-                sys.stderr.write("\r0%")
+            # Check if any of the powermetrics_keys are in the line
+            for key in powermetrics_keys:
+                if key in line:
+                    key_value = line.split(':', 1)
+                    if len(key_value) == 2:
+                        powermetrics_dict[key.strip()] = key_value[1].strip()
+                        missing.discard(key)
+                    break
             
-            # If we have started timing, read the line and process it
-            if start_seconds is not None:
-                current_seconds = time.time()
-                elapsed_seconds = current_seconds - start_seconds
-                
-                if "System Average frequency as fraction of nominal" in line:
-                    key, value = line.split(':', 1)
-                    powermetrics_dict[key.strip()] = value.strip()
-                
-                elif 'machdep.cpu.mwait.sub_Cstates' in line or 'machdep.cpu.thermal.hardware_feedback' in line:
-                    key, value = line.split(':', 1)
-                    powermetrics_dict[key.strip()] = value.strip()
-
-                # Check if the required number of values have been obtained
-                if len(powermetrics_dict) >= 3:
-                    sys.stderr.write("\r100%")
-                    break
-                
-                # Check for timeout
-                if elapsed_seconds >= max_seconds:
-                    timeout = True
-                    break
-                
-                # Update progress
-                sys.stderr.write("\r%s%%" % round((elapsed_seconds / max_seconds) * 100))
-                sys.stderr.flush()
-
+            # Update progress
+            sys.stderr.write("\r%s%%" % round(float(len(powermetrics_dict)) / float(keys_max) * 100.0))
+            sys.stderr.flush()
+            
+            # Check if the required number of keys have been collected
+            if len(powermetrics_dict) >= keys_max:
+                break
+        
     except KeyboardInterrupt:
         # Handle manual termination
         print("\nTerminating powermetrics command due to user interruption.", file=sys.stderr)
@@ -96,10 +96,12 @@ def get_powermetrics_data():
         process.terminate()
         process.wait()
         
-        if timeout:
-            print("powermetrics timed out", file=sys.stderr)
-
+        if missing:
+            missing_keys = ', '.join(missing)
+            print("powermetrics completed, but the following keys are missing: " + missing_keys, file=sys.stderr)
+    
     return powermetrics_dict
+
 
 def combine_dictionaries(*args):
     """Combines multiple dictionaries."""
